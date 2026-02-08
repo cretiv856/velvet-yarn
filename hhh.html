@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velvet Yarn Co. | The Global Crochet Standard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #9d72ff;
+            --accent: #ff99cc;
+            --bg: #120b1e;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- AUTH MODAL --- */
+        #auth-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .auth-card {
+            background: linear-gradient(135deg, #2e1a47, #4b2c70);
+            padding: 40px; border-radius: 30px; text-align: center;
+            border: 2px solid var(--primary); width: 350px;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex; justify-content: space-between; padding: 20px 5%;
+            background: rgba(18, 11, 30, 0.8); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--glass);
+        }
+        .nav-links span { margin-left: 20px; cursor: pointer; font-weight: 600; color: var(--accent); }
+
+        /* --- SECTIONS --- */
+        .page { display: none; padding: 50px 8%; min-height: 100vh; animation: fadeIn 0.8s; }
+        .active { display: block; }
+
+        .card { background: var(--glass); padding: 25px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* --- QUIZ SYSTEM --- */
+        .quiz-option {
+            background: var(--glass); padding: 15px; margin: 10px 0;
+            border-radius: 10px; cursor: pointer; transition: 0.3s;
+        }
+        .quiz-option:hover { background: var(--primary); }
+
+        /* --- TUTORIAL GRID --- */
+        .tutorial-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .video-placeholder { 
+            background: #000; height: 150px; border-radius: 15px; 
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .video-placeholder img { width: 100%; opacity: 0.6; }
+
+        /* --- SHOPPING --- */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .product-card { background: white; color: black; padding: 15px; border-radius: 15px; text-align: center; }
+        .product-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; }
+        .buy-btn { background: #ff9900; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="auth-overlay">
+    <div class="auth-card">
+        <h1 style="font-family:'Pacifico'">Velvet Yarn Co.</h1>
+        <p>Welcome, Crafter!</p>
+        <input type="text" id="username" placeholder="Enter Username" style="padding:10px; width:80%; border-radius:10px; border:none; margin-bottom:10px;"><br>
+        <button onclick="login('user')" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">Register & Save</button>
+        <p style="margin: 10px 0;">- or -</p>
+        <button onclick="login('guest')" style="background:none; border: 1px solid white; color:white; padding:10px 20px; border-radius:10px; cursor:pointer;">Guest Mode</button>
+    </div>
+</div>
+
+<nav>
+    <div style="font-family:'Pacifico'; font-size: 1.5rem;">Velvet Yarn Co.</div>
+    <div class="nav-links">
+        <span onclick="showPage('home')">Studio</span>
+        <span onclick="showPage('academy')">Academy</span>
+        <span onclick="showPage('boutique')">Boutique</span>
+        <span onclick="showPage('ai-lab')">Velvet AI</span>
+    </div>
+</nav>
+
+<div id="home" class="page active">
+    <h1 id="welcome-msg">Welcome!</h1>
+    <div class="card">
+        <h3>Current Project Details</h3>
+        <input type="text" id="project-name" placeholder="Enter Project Name (e.g. Lavender Cardigan)" style="width:100%; padding:15px; background:none; border:1px solid var(--primary); color:white; border-radius:10px;">
+        <div style="text-align: center; margin-top: 20px;">
+            <p>Row Count for <b id="display-name">New Project</b></p>
+            <h1 style="font-size: 5rem; margin:0;" id="rows">0</h1>
+            <button onclick="changeRows(1)" style="font-size:2rem; padding:10px 30px; border-radius:20px; border:none; background:var(--primary); color:white;">+</button>
+            <button onclick="changeRows(-1)" style="font-size:2rem; padding:10px 30px; border-radius:20px; border:none; background:var(--accent); color:white;">-</button>
+        </div>
+    </div>
+</div>
+
+<div id="quiz-page" class="page">
+    <div class="card">
+        <h2>Placement Questionnaire 📝</h2>
+        <div id="quiz-content">
+            <p id="question">Question 1: Do you know how to hold a crochet hook comfortably?</p>
+            <div class="quiz-option" onclick="nextQuestion(1)">Yes, I'm ready!</div>
+            <div class="quiz-option" onclick="nextQuestion(0)">Not yet, teach me!</div>
+        </div>
+    </div>
+</div>
+
+<div id="academy" class="page">
+    <div id="level-status" class="card" style="background: var(--primary);">
+        <h2>Your Level: <span id="user-level">Beginner</span></h2>
+        <p>Requirements for next level: Complete 10 Beginner Tutorials.</p>
+    </div>
+    <h2>Curated Video Library</h2>
+    <div class="tutorial-grid" id="video-list">
+        </div>
+</div>
+
+<div id="boutique" class="page">
+    <h2>The Velvet Collection</h2>
+    <p>Premium recommendations from Amazon & Flipkart</p>
+    <div class="shop-grid" id="product-list">
+        </div>
+</div>
+
+<div id="ai-lab" class="page">
+    <div class="card" style="background: linear-gradient(45deg, #6a11cb, #2575fc);">
+        <h2>Velvet AI Core 🤖</h2>
+        <p>The world's most advanced crochet logic engine.</p>
+        <textarea id="ai-input" style="width:100%; height:150px; border-radius:15px; padding:15px;" placeholder="Ask me complex patterns, color theory, or stitch fixes..."></textarea>
+        <button onclick="runAI()" class="buy-btn" style="background:white; color:var(--primary);">Process Request</button>
+        <div id="ai-output" style="margin-top:20px; font-weight: 300; border-left: 2px solid white; padding-left: 10px;"></div>
+    </div>
+</div>
+
+<script>
+    let userData = { name: "", mode: "guest", level: "Beginner", score: 0 };
+    
+    function login(mode) {
+        userData.name = document.getElementById('username').value || "Crafter";
+        userData.mode = mode;
+        document.getElementById('auth-overlay').style.display = 'none';
+        document.getElementById('welcome-msg').innerText = "Welcome back, " + userData.name + " ✨";
+        if(mode === 'user') showPage('quiz-page');
+        initAcademy();
+        initShop();
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // Row Counter Logic
+    let rowCount = 0;
+    function changeRows(v) {
+        const pName = document.getElementById('project-name').value;
+        document.getElementById('display-name').innerText = pName || "Project";
+        rowCount += v;
+        if(rowCount < 0) rowCount = 0;
+        document.getElementById('rows').innerText = rowCount;
+    }
+
+    // Quiz Logic
+    let currentQ = 1;
+    function nextQuestion(points) {
+        userData.score += points;
+        currentQ++;
+        if(currentQ === 2) {
+            document.getElementById('question').innerText = "Question 2: Have you ever completed a full project (like a scarf)?";
+        } else if(currentQ === 3) {
+            document.getElementById('question').innerText = "Question 3: Do you understand terms like 'Increase' and 'Decrease'?";
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        if(userData.score === 3) userData.level = "Advanced";
+        else if(userData.score === 2) userData.level = "Intermediate";
+        else userData.level = "Beginner";
+        document.getElementById('user-level').innerText = userData.level;
+        showPage('academy');
+    }
+
+    // Populate 20+ Tutorials
+    function initAcademy() {
+        const list = document.getElementById('video-list');
+        for(let i=1; i<=20; i++) {
+            list.innerHTML += `
+                <div class="card">
+                    <div class="video-placeholder"><img src="https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg"></div>
+                    <h4>Tutorial #${i}: Advanced Velvet Stitches</h4>
+                    <a href="https://www.youtube.com/results?search_query=crochet+tutorial+level+${userData.level}" target="_blank" style="color:var(--accent)">Watch on YouTube</a>
+                </div>
+            `;
+        }
+    }
+
+    // Populate 100 Products
+    function initShop() {
+        const list = document.getElementById('product-list');
+        for(let i=1; i<=100; i++) {
+            list.innerHTML += `
+                <div class="product-card">
+                    <img src="https://m.media-amazon.com/images/I/718y9p6P-pL._AC_SL1500_.jpg">
+                    <h5>Yarn Bundle #${i}</h5>
+                    <button class="buy-btn" onclick="window.open('https://www.amazon.in/s?k=crochet+yarn')">Buy on Amazon</button>
+                </div>
+            `;
+        }
+    }
+
+    // Advanced AI Simulation
+    function runAI() {
+        const input = document.getElementById('ai-input').value.toLowerCase();
+        const output = document.getElementById('ai-output');
+        output.innerText = "Analyzing stitch density and color theory... Please wait.";
+        
+        setTimeout(() => {
+            if(input.includes("color")) {
+                output.innerText = "Velvet AI Recommendation: For a lavender base, use 'Honey Gold' for contrast or 'Dusty Rose' for a monochromatic aesthetic. These maximize visual texture in crochet loops.";
+            } else {
+                output.innerText = "Velvet AI: Based on current trends, your project requires a 4.5mm hook for optimal velvet drape. Ensure you count the turning chain as a stitch for this pattern.";
+            }
+        }, 1500);
+    }
+</script>
+</body>
+</html>
